@@ -1,0 +1,27 @@
+version: "3"
+services:
+
+  redis:
+    image: redis:alpine
+    ports:
+      - "6379"
+    networks: 
+      - net1
+    deploy:
+      replicas: 3
+      placement:
+        constraints: [node.labels.Redis == true ]
+  app:
+    image: felipeweb/app-counter
+    ports:
+      - 5000:5000
+    networks:
+      - net1
+    depends_on:
+      - redis
+    deploy: 
+      replicas: 2
+      placement:
+        constraints: [node.labels.App == true ]
+networks: 
+  net1:
